@@ -23,7 +23,7 @@ import seaborn as sns
 # ============================================================
 
 st.set_page_config(
-    page_title="Dry Bean Classification",
+    page_title="Dry Bean Classification & Model Comparison",
     page_icon="🌱",
     layout="wide"
 )
@@ -102,8 +102,8 @@ st.title("🌱 Dry Bean Classification")
 
 st.write(
     """
-    An interactive machine learning application for evaluating
-    classification models on the Dry Bean Dataset.
+    An Interactive Machine Learning Classification Dashboard — 
+    compare models and evaluate their performance on dry bean variety classification.
     """
 )
 
@@ -623,5 +623,5 @@ else:
 st.divider()
 
 st.caption(
-    "Dry Bean Classification | BITS Pilani WILP"
+    "Dry Bean Classification | by Harshini J"
 )
