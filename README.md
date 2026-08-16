@@ -104,13 +104,18 @@ It represents the variety of the dry bean.
 
 The following preprocessing steps were performed:
 
-1. The dataset was loaded and inspected.
+1. The dataset was loaded and inspected for missing values and duplicate rows.
 2. The target column `Class` was separated from the input features.
-3. The data was divided into training and testing sets.
-4. Feature scaling was applied where required by the model.
-5. The same training and test data were used for all models so that their
-   performance could be compared fairly.
-6. A fixed random state was used to make the results reproducible.
+3. The dataset was divided into **80% training data and 20% testing data**.
+4. Stratified sampling was used to preserve the class distribution in the
+   training and testing sets.
+5. StandardScaler was applied to Logistic Regression, KNN, and Gaussian
+   Naive Bayes.
+6. Decision Tree and Random Forest were used without feature scaling because
+   tree-based models are not sensitive to feature scale.
+7. Scaling was performed inside a Pipeline so that the scaler was fitted only
+   on the training data, preventing data leakage.
+8. A fixed random state of **42** was used to make the results reproducible.
 
 ---
 
@@ -135,8 +140,8 @@ https://github.com/Harsh-200/2025ac05202_ML_ASSIGNMENT2.git
 ├── test_data.csv
 │
 └── model/
-    ├── 2025ac05202_ML_Assignment2.py
     ├── 2025ac05202_ML_Assignment2.ipynb
+    ├── 2025ac05202_ML_assignment2.py
     ├── logistic_regression.pkl
     ├── decision_tree.pkl
     ├── knn.pkl
@@ -145,6 +150,7 @@ https://github.com/Harsh-200/2025ac05202_ML_ASSIGNMENT2.git
     │
     └── outputs/
         └── model_comparison.csv
+```
 
 ## d. Models Used
 
@@ -218,31 +224,31 @@ performance was very close to Random Forest.
 Overall, Random Forest was selected as the winner because it achieved the
 highest scores across the majority of the evaluation metrics.
 
-Streamlit Application
+## Streamlit Application
 
 An interactive Streamlit application was developed to provide a simple
 interface for testing and evaluating the trained machine learning models.
 
-Live Streamlit App
+### Live Streamlit App
 
 https://8zn6uuo4rwpccdw4sgvqq3.streamlit.app/
 
-Application Features
+### Application Features
 
 The Streamlit application provides the following features:
 
-Upload test data in CSV format
-Select a machine learning model using a dropdown
-Display Accuracy
-Display AUC
-Display Precision
-Display Recall
-Display F1 Score
-Display MCC
-Display a confusion matrix
-Display a classification report
-View prediction results
-Compare the performance of all implemented models
+- Upload test data in CSV format
+- Select a machine learning model using a dropdown
+- Display Accuracy
+- Display AUC
+- Display Precision
+- Display Recall
+- Display F1 Score
+- Display MCC
+- Display a confusion matrix
+- Display a classification report
+- View prediction results
+- Compare the performance of all implemented models
 
-The application uses the saved trained models from the model directory,
+The application uses the saved trained models from the `model` directory,
 so the models do not need to be retrained when the application is opened.
