@@ -1,5 +1,6 @@
-# 2025ac05202_ML_ASSIGNMENT2
 # 🌱 Dry Bean Variety Prediction & Model Evaluation
+
+### 2025ac05202_ML_ASSIGNMENT2
 
 An Interactive Machine Learning Classification Dashboard
 
@@ -49,7 +50,7 @@ Dry Bean dataset.
 
 ### Dataset Source
 
-(https://archive.ics.uci.edu/static/public/602/dry+bean+dataset.zip)
+[UCI Machine Learning Repository – Dry Bean Dataset](https://archive.ics.uci.edu/dataset/602/dry%2Bbean)
 
 ### Dataset Characteristics
 
@@ -239,12 +240,7 @@ The Streamlit application provides the following features:
 
 - Upload test data in CSV format
 - Select a machine learning model using a dropdown
-- Display Accuracy
-- Display AUC
-- Display Precision
-- Display Recall
-- Display F1 Score
-- Display MCC
+- Display Accuracy, AUC, Precision, Recall, F1 Score, and MCC
 - Display a confusion matrix
 - Display a classification report
 - View prediction results
