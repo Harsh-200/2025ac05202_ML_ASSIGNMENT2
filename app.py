@@ -23,52 +23,32 @@ import seaborn as sns
 # ============================================================
 
 st.set_page_config(
-    page_title="Dry Bean Classifier",
+    page_title="Dry Bean Classification",
     page_icon="🌱",
     layout="wide"
 )
 
 
 # ============================================================
-# CUSTOM CSS
+# PROJECT PATHS
 # ============================================================
 
-st.markdown(
-    """
-    <style>
-
-    .main-title {
-        font-size: 40px;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 5px;
-    }
-
-    .subtitle {
-        text-align: center;
-        font-size: 18px;
-        color: #666666;
-        margin-bottom: 30px;
-    }
-
-    .metric-label {
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-# ============================================================
-# PROJECT CONFIGURATION
-# ============================================================
-
+# app.py is located in the repository root
 MODEL_DIR = "model"
 
+# Your comparison file is inside model/outputs/
+COMPARISON_PATH = os.path.join(
+    MODEL_DIR,
+    "outputs",
+    "model_comparison.csv"
+)
+
 TARGET = "Class"
+
+
+# ============================================================
+# MODEL FILES
+# ============================================================
 
 MODEL_FILES = {
 
@@ -115,21 +95,17 @@ EXPECTED_FEATURES = [
 
 
 # ============================================================
-# HEADER
+# TITLE
 # ============================================================
 
-st.markdown(
-    '<div class="main-title">🌱 Dry Bean Classification</div>',
-    unsafe_allow_html=True
-)
+st.title("🌱 Dry Bean Classification")
 
-st.markdown(
-    '<div class="subtitle">'
-    'Machine Learning Model Comparison and Prediction Dashboard'
-    '</div>',
-    unsafe_allow_html=True
+st.write(
+    """
+    An interactive machine learning application for evaluating
+    classification models on the Dry Bean Dataset.
+    """
 )
-
 
 st.divider()
 
@@ -140,39 +116,36 @@ st.divider()
 
 with st.sidebar:
 
-    st.header("Project Information")
+    st.header("About the Project")
 
     st.write(
         """
-        This application compares five machine learning
-        classification models trained on the UCI Dry Bean Dataset.
+        This project compares five machine learning classification
+        algorithms using the Dry Bean Dataset.
         """
     )
 
-    st.write("**Dataset:** UCI Dry Bean Dataset")
-
+    st.write("**Dataset:** Dry Bean Dataset")
+    st.write("**Problem:** Multiclass Classification")
     st.write("**Features:** 16")
-
     st.write("**Classes:** 7")
-
-    st.write("**Task:** Multiclass Classification")
 
     st.divider()
 
-    st.header("Models")
+    st.subheader("Models")
 
     for model_name in MODEL_FILES:
         st.write(f"• {model_name}")
 
 
 # ============================================================
-# CSV UPLOAD
+# STEP 1 — UPLOAD TEST DATA
 # ============================================================
 
-st.header("1. Upload Test Dataset")
+st.header("1. Upload Test Data")
 
 uploaded_file = st.file_uploader(
-    "Upload the test_data.csv file generated during model evaluation.",
+    "Upload the test_data.csv generated during model evaluation.",
     type=["csv"]
 )
 
@@ -180,14 +153,14 @@ uploaded_file = st.file_uploader(
 if uploaded_file is None:
 
     st.info(
-        "Please upload test_data.csv to begin model evaluation."
+        "Upload test_data.csv to evaluate the classification models."
     )
 
     st.stop()
 
 
 # ============================================================
-# LOAD DATA
+# READ CSV
 # ============================================================
 
 try:
@@ -199,14 +172,14 @@ try:
 except Exception as e:
 
     st.error(
-        f"Unable to read the uploaded CSV file: {e}"
+        f"Error reading CSV file: {e}"
     )
 
     st.stop()
 
 
 # ============================================================
-# VALIDATE DATA
+# VALIDATE FEATURES
 # ============================================================
 
 missing_features = [
@@ -215,12 +188,14 @@ missing_features = [
     if feature not in test_data.columns
 ]
 
+
 if missing_features:
 
     st.error(
-        "The uploaded dataset is missing the following "
-        f"required features: {missing_features}"
+        "The uploaded CSV is missing these required features:"
     )
+
+    st.write(missing_features)
 
     st.stop()
 
@@ -228,19 +203,18 @@ if missing_features:
 if TARGET not in test_data.columns:
 
     st.error(
-        "The uploaded dataset must contain the "
-        f"'{TARGET}' column for evaluation."
+        "The uploaded CSV must contain the 'Class' column."
     )
 
     st.stop()
 
 
 # ============================================================
-# DISPLAY DATASET INFORMATION
+# DATASET INFORMATION
 # ============================================================
 
 st.success(
-    "Dataset uploaded successfully."
+    "Test dataset uploaded successfully."
 )
 
 col1, col2, col3 = st.columns(3)
@@ -267,7 +241,7 @@ with col3:
     )
 
 
-with st.expander("Preview Test Dataset"):
+with st.expander("Preview Uploaded Data"):
 
     st.dataframe(
         test_data.head(10),
@@ -276,7 +250,7 @@ with st.expander("Preview Test Dataset"):
 
 
 # ============================================================
-# PREPARE TEST DATA
+# PREPARE DATA
 # ============================================================
 
 X_test = test_data[
@@ -289,21 +263,21 @@ y_test = test_data[
 
 
 # ============================================================
-# MODEL SELECTION
+# STEP 2 — MODEL SELECTION
 # ============================================================
 
 st.divider()
 
-st.header("2. Select Classification Model")
+st.header("2. Select Model")
 
 selected_model = st.selectbox(
-    "Choose a model to evaluate:",
+    "Choose a classification model:",
     list(MODEL_FILES.keys())
 )
 
 
 # ============================================================
-# LOAD SELECTED MODEL
+# MODEL PATH
 # ============================================================
 
 model_path = os.path.join(
@@ -312,14 +286,29 @@ model_path = os.path.join(
 )
 
 
+# ============================================================
+# CHECK MODEL EXISTS
+# ============================================================
+
 if not os.path.exists(model_path):
 
     st.error(
-        f"Model file not found: {model_path}"
+        f"""
+        The selected model file was not found:
+
+        {model_path}
+
+        Please make sure all five .pkl files are uploaded
+        inside the model folder.
+        """
     )
 
     st.stop()
 
+
+# ============================================================
+# LOAD MODEL
+# ============================================================
 
 try:
 
@@ -330,14 +319,14 @@ try:
 except Exception as e:
 
     st.error(
-        f"Unable to load the selected model: {e}"
+        f"Unable to load model: {e}"
     )
 
     st.stop()
 
 
 # ============================================================
-# GENERATE PREDICTIONS
+# PREDICTION
 # ============================================================
 
 try:
@@ -360,7 +349,7 @@ except Exception as e:
 
 
 # ============================================================
-# CALCULATE METRICS
+# METRICS
 # ============================================================
 
 accuracy = accuracy_score(
@@ -403,38 +392,33 @@ mcc = matthews_corrcoef(
 
 
 # ============================================================
-# DISPLAY MODEL
+# STEP 3 — DISPLAY METRICS
 # ============================================================
 
-st.success(
-    f"Selected Model: **{selected_model}**"
+st.divider()
+
+st.header(
+    f"3. Evaluation Metrics — {selected_model}"
 )
 
 
-# ============================================================
-# DISPLAY METRICS
-# ============================================================
+col1, col2, col3 = st.columns(3)
 
-st.header("3. Model Evaluation Metrics")
-
-
-row1 = st.columns(3)
-
-with row1[0]:
+with col1:
 
     st.metric(
         "Accuracy",
         f"{accuracy:.4f}"
     )
 
-with row1[1]:
+with col2:
 
     st.metric(
         "AUC",
         f"{auc:.4f}"
     )
 
-with row1[2]:
+with col3:
 
     st.metric(
         "Precision",
@@ -442,23 +426,23 @@ with row1[2]:
     )
 
 
-row2 = st.columns(3)
+col4, col5, col6 = st.columns(3)
 
-with row2[0]:
+with col4:
 
     st.metric(
         "Recall",
         f"{recall:.4f}"
     )
 
-with row2[1]:
+with col5:
 
     st.metric(
         "F1 Score",
         f"{f1:.4f}"
     )
 
-with row2[2]:
+with col6:
 
     st.metric(
         "MCC",
@@ -467,7 +451,7 @@ with row2[2]:
 
 
 # ============================================================
-# CONFUSION MATRIX
+# STEP 4 — CONFUSION MATRIX
 # ============================================================
 
 st.divider()
@@ -508,23 +492,22 @@ ax.set_ylabel(
 )
 
 ax.set_title(
-    f"Confusion Matrix - {selected_model}"
+    f"Confusion Matrix — {selected_model}"
 )
 
 plt.tight_layout()
 
-st.pyplot(
-    fig
-)
+st.pyplot(fig)
 
 plt.close(fig)
 
 
 # ============================================================
-# CLASSIFICATION REPORT
+# STEP 5 — CLASSIFICATION REPORT
 # ============================================================
 
 st.header("5. Classification Report")
+
 
 report = classification_report(
     y_test,
@@ -533,9 +516,11 @@ report = classification_report(
     zero_division=0
 )
 
+
 report_df = pd.DataFrame(
     report
 ).transpose()
+
 
 st.dataframe(
     report_df.round(4),
@@ -544,12 +529,11 @@ st.dataframe(
 
 
 # ============================================================
-# PREDICTION RESULTS
+# STEP 6 — PREDICTION RESULTS
 # ============================================================
 
-st.divider()
-
 st.header("6. Prediction Results")
+
 
 prediction_results = X_test.copy()
 
@@ -567,6 +551,7 @@ prediction_results[
     y_test.values == y_pred
 )
 
+
 st.dataframe(
     prediction_results,
     use_container_width=True
@@ -574,26 +559,19 @@ st.dataframe(
 
 
 # ============================================================
-# MODEL COMPARISON
+# STEP 7 — ALL MODEL COMPARISON
 # ============================================================
 
 st.divider()
 
 st.header("7. Model Comparison")
 
-comparison_path = os.path.join(
-    "outputs",
-    "model_comparison.csv"
-)
 
-
-if os.path.exists(comparison_path):
+if os.path.exists(COMPARISON_PATH):
 
     comparison_df = pd.read_csv(
-        comparison_path
+        COMPARISON_PATH
     )
-
-    display_comparison = comparison_df.copy()
 
     metric_columns = [
         "Accuracy",
@@ -604,36 +582,37 @@ if os.path.exists(comparison_path):
         "MCC"
     ]
 
-    display_comparison[
+    comparison_display = comparison_df.copy()
+
+    comparison_display[
         metric_columns
-    ] = display_comparison[
+    ] = comparison_display[
         metric_columns
     ].round(4)
 
     st.dataframe(
-        display_comparison,
+        comparison_display,
         use_container_width=True,
         hide_index=True
     )
 
-    # --------------------------------------------------------
-    # Highlight best model
-    # --------------------------------------------------------
 
-    best_model_row = comparison_df.loc[
+    # Find best model based on F1
+    best_model = comparison_df.loc[
         comparison_df["F1"].idxmax()
     ]
 
-    st.info(
-        f"**Best overall model based on F1 Score:** "
-        f"{best_model_row['ML Model Name']} "
-        f"({best_model_row['F1']:.4f})"
+
+    st.success(
+        f"Overall Winner: **{best_model['ML Model Name']}** "
+        f"based on the highest F1 Score "
+        f"({best_model['F1']:.4f})"
     )
 
 else:
 
     st.warning(
-        "Model comparison file was not found."
+        "model_comparison.csv was not found."
     )
 
 
@@ -644,6 +623,5 @@ else:
 st.divider()
 
 st.caption(
-    "Dry Bean Classification | BITS Pilani WILP "
-    "| Machine Learning Classification Assignment"
+    "Dry Bean Classification | BITS Pilani WILP"
 )
