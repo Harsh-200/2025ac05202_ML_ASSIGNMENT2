@@ -135,7 +135,8 @@ https://github.com/Harsh-200/2025ac05202_ML_ASSIGNMENT2.git
 ├── test_data.csv
 │
 └── model/
-    ├── ML_Assignment2.ipynb
+    ├── 2025ac05202_ML_Assignment2.py
+    ├── 2025ac05202_ML_Assignment2.ipynb
     ├── logistic_regression.pkl
     ├── decision_tree.pkl
     ├── knn.pkl
