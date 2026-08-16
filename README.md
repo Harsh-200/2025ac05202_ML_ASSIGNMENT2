@@ -49,7 +49,7 @@ Dry Bean dataset.
 
 ### Dataset Source
 
-[The Dry Bean Dataset is a publicly available classification dataset.](https://archive.ics.uci.edu/static/public/602/dry+bean+dataset.zip)
+(https://archive.ics.uci.edu/static/public/602/dry+bean+dataset.zip)
 
 ### Dataset Characteristics
 
@@ -122,7 +122,7 @@ GitHub repository.
 
 **GitHub Repository:**
 
-[PASTE YOUR GITHUB REPOSITORY URL HERE]
+https://github.com/Harsh-200/2025ac05202_ML_ASSIGNMENT2.git
 
 ### Repository Contents
 
