@@ -98,7 +98,7 @@ EXPECTED_FEATURES = [
 # TITLE
 # ============================================================
 
-st.title("🌱 Dry Bean Classification")
+st.title("🌱 Dry Bean Classification & Model Comparison")
 
 st.write(
     """
